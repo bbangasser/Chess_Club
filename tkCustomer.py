@@ -53,6 +53,7 @@ class CustomerFrame(ttk.Frame):
         self.customerName.set("")
        
 if __name__ == "__main__":
+    print("This has been edited by Stephen Kasahara")
     root = tk.Tk()
     root.title("Customer")
     root.geometry("400x200")
