@@ -1,4 +1,6 @@
 import tkinter as tk
+import tkinter.ttk as ttk
+import sqlite3
 
 LARGE_FONT = ("Verdana", 12)
 
@@ -44,6 +46,7 @@ class StartPage(tk.Frame):
 class PageOne(tk.Frame):
     def __init__(self, master):
         tk.Frame.__init__(self, master)
+        self.create_table()
 
         # defining variables
         self.player1ID = tk.StringVar()
@@ -54,6 +57,7 @@ class PageOne(tk.Frame):
         # Create text entries for players
         tk.Label(self, text="Player One ID").grid(column=0, row=1, sticky=tk.E)
         tk.Entry(self, width=25, textvariable=self.player1ID).grid(column=1, row=1)
+
         tk.Label(self, text="Player Two ID").grid(column=0, row=2, sticky=tk.E)
         tk.Entry(self, width=25, textvariable=self.player2ID).grid(column=1, row=2)
 
@@ -74,12 +78,62 @@ class PageOne(tk.Frame):
 
 
 # Add player
-class PageTwo(tk.Frame):
-    def __init__(self, master):
-        tk.Frame.__init__(self, master)
+class PageTwo(ttk.Frame):
+    def __init__(self, parent):
+        ttk.Frame.__init__(self, parent, padding="10 10 10 10")
+        self.pack(fill=tk.BOTH, expand=True)
+
+        # Define string variable for the first entry field
+        self.playerName = tk.StringVar()
+        self.firstName = tk.StringVar()
+        self.lastName = tk.StringVar()
+        self.address = tk.StringVar()
+        self.phone = tk.StringVar()
+        self.rating = tk.StringVar()
+
+        # Create a label, entry field, and a button
+        ttk.Label(self, text="First Name").grid(column=0, row=0, sticky=tk.E)
+        ttk.Entry(self, width=25, textvariable=self.firstName).grid(column=1, row=0)
+        ttk.Button(self, text="Clear", command=self.clear).grid(column=2, row=0)
+
+        ttk.Label(self, text='Last Name').grid(column=0, row=1, sticky=tk.E)
+        ttk.Entry(self, width=25, textvariable=self.lastName).grid(column=1, row=1)
+        ttk.Button(self, text="Clear", command=self.clear).grid(column=2, row=1)
+
+        ttk.Label(self, text='Address').grid(column=0, row=2, sticky=tk.E)
+        ttk.Entry(self, width=25, textvariable=self.address).grid(column=1, row=2)
+        ttk.Button(self, text="Clear", command=self.clear).grid(column=2, row=2)
+
+        ttk.Label(self, text='Phone Number').grid(column=0, row=3, sticky=tk.E)
+        ttk.Entry(self, width=25, textvariable=self.phone).grid(column=1, row=3)
+        ttk.Button(self, text="Clear", command=self.clear).grid(column=2, row=3)
+
+        ttk.Label(self, text='Rating').grid(column=0, row=4, sticky=tk.E)
+        ttk.Entry(self, width=25, textvariable=self.rating).grid(column=1, row=4)
+        ttk.Button(self, text="Clear", command=self.clear).grid(column=2, row=4)
+
+        ttk.Button(self, text='Exit', command=self.destroy).grid(column=1, row=5)
+
+        # Add padding to all child components
+        for child in self.winfo_children():
+            child.grid_configure(padx=8, pady=6)
+
+    # Define the event listener for the Clear button
+    def clear(self):
+        print("Player Name", self.firstName.get())
+        self.playerName.set("")
+
+
+
+
+
         tk.Label(self, text="Add Player").pack(side="top", fill="x", pady=10)
         tk.Button(self, text="Return to start page",
                   command=lambda: master.switch_frame(StartPage)).pack()
+
+
+
+
 
 
 # Delete player
@@ -121,7 +175,12 @@ class PageFour(tk.Frame):
 
 
 if __name__ == "__main__":
+    conn = sqlite3.connect("chess_club.db")
+    c = conn.cursor()
     app = ChessProgram()
     app.title("Chess Program")
     app.geometry('400x200')
     app.mainloop()
+
+    c.close()
+    conn.close()
